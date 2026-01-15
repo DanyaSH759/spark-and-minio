@@ -1,46 +1,25 @@
+adduser my_user
+usermod -aG sudo my_user
+groups my_user
+sudo whoami
+
 sudo apt update
 sudo apt upgrade -y
 
-
-sudo apt install -y \
-  ca-certificates \
-  curl \
-  wget \
-  git \
-  unzip \
-  htop \
-  tree \
-  build-essential \
-  software-properties-common
-
-sudo apt install -y python3 python3-venv python3-pip
-
-sudo apt install -y openjdk-17-jdk
-java -version
-
-curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker $USER
-newgrp docker
-docker version
-docker compose version
-
-sudo apt install -y pipx
-pipx ensurepath
-
-pipx install uv
-uv --version
-
-uv venv
-uv init
-uv add pyspark==3.5.1
-uv sync
-
+chmod +x bootstrap.sh
+ls -l bootstrap.sh
+./bootstrap.sh
 
 uv run python -c "import pyspark; print(pyspark.__version__)"
 
 
-docker compose down -v
-docker compose up -d
+# docker compose down -v
+# docker compose up -d
 docker ps
 
 uv run python local_spark_test.py
+uv run python spark_to_minio_smoke.py
+
+
+docker run --rm --network=host --entrypoint sh minio/mc:latest \
+  -c "mc alias set local http://000:9000 THE_BEST_LOGIN THE_BEST_PASSWORD && mc ls local"
