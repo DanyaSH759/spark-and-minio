@@ -3,19 +3,21 @@ usermod -aG sudo my_user
 groups my_user
 sudo whoami
 
-sudo apt update
-sudo apt upgrade -y
+sudo chmod +x bootstrap_spark.sh
+ls -l  bootstrap_spark.sh
+./bootstrap_spark.sh
 
-chmod +x bootstrap.sh
-ls -l bootstrap.sh
-./bootstrap.sh
+
+sudo usermod -aG docker "$USER"
+exec su - "$USER"
+groups | grep docker
+
+sudo docker compose down -v
+sudo docker compose up -d
+sudo docker ps
+
 
 uv run python -c "import pyspark; print(pyspark.__version__)"
-
-
-# docker compose down -v
-# docker compose up -d
-docker ps
 
 uv run python local_spark_test.py
 uv run python spark_to_minio_smoke.py
